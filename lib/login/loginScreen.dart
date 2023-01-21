@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -8,6 +9,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  TextEditingController idController = TextEditingController();
+  TextEditingController passController = TextEditingController();
   double screenHeight = 0;
   double screenWidth = 0;
 
@@ -16,67 +19,93 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isKeyboardVisible =
+        KeyboardVisibilityProvider.isKeyboardVisible(context);
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         body: Column(
-      children: [
-        Container(
-          height: screenHeight / 3,
-          width: screenWidth,
-          decoration: BoxDecoration(
-            color: primary,
-            borderRadius:
-                const BorderRadius.only(bottomRight: Radius.circular(70)),
-          ),
-          child: Center(
-            child: Icon(
-              Icons.person,
-              color: Colors.white,
-              size: screenWidth / 5,
+          children: [
+            isKeyboardVisible
+                ? SizedBox(
+                    height: screenHeight / 16,
+                  )
+                : Container(
+                    height: screenHeight / 3,
+                    width: screenWidth,
+                    decoration: BoxDecoration(
+                      color: primary,
+                      borderRadius: const BorderRadius.only(
+                          bottomRight: Radius.circular(70)),
+                    ),
+                    child: Center(
+                      child: Icon(
+                        Icons.person,
+                        color: Colors.white,
+                        size: screenWidth / 5,
+                      ),
+                    ),
+                  ),
+            Container(
+              margin: EdgeInsets.only(top: screenHeight / 15),
+              child: Text(
+                "Login",
+                style: TextStyle(
+                  fontSize: screenWidth / 18,
+                  fontFamily: "NexaBold",
+                ),
+              ),
             ),
-          ),
-        ),
-        Container(
-          margin: EdgeInsets.only(top: screenHeight / 15),
-          child: Text(
-            "Login",
-            style: TextStyle(
-              fontSize: screenWidth / 18,
-              fontFamily: "NexaBold",
+            Container(
+              alignment: Alignment.centerLeft,
+              margin: EdgeInsets.symmetric(
+                horizontal: screenWidth / 12,
+                vertical: 10,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  fieldTitle("User ID"),
+                  customField("Enter your User ID", idController, false),
+                ],
+              ),
             ),
-          ),
-        ),
-        Container(
-          alignment: Alignment.centerLeft,
-          margin: EdgeInsets.symmetric(
-            horizontal: screenWidth / 12,
-            vertical: 10,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              fieldTitle("User ID"),
-              customField("Enter your User ID"),
-            ],
-          ),
-        ),
-        Container(
-          alignment: Alignment.centerLeft,
-          margin: EdgeInsets.symmetric(
-            horizontal: screenWidth / 12,
-            vertical: 10,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              fieldTitle("Password"),
-              customField("Enter your password"),
-            ],
-          ),
-        ),
-      ],
-    ));
+            Container(
+              alignment: Alignment.centerLeft,
+              margin: EdgeInsets.symmetric(
+                horizontal: screenWidth / 12,
+                vertical: 10,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  fieldTitle("Password"),
+                  customField("Enter your password", passController, true),
+                  Container(
+                    height: 60,
+                    width: screenWidth,
+                    margin: EdgeInsets.only(top: screenHeight / 40),
+                    decoration: BoxDecoration(
+                        color: primary,
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(35))),
+                    child: Center(
+                        child: Text(
+                      "LOGIN",
+                      style: TextStyle(
+                        fontFamily: "NexaBold",
+                        fontSize: screenWidth / 26,
+                        color: Colors.white,
+                        letterSpacing: 2,
+                      ),
+                    )),
+                  )
+                ],
+              ),
+            ),
+          ],
+        ));
   }
 
   Widget fieldTitle(String title) {
@@ -87,7 +116,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 TextStyle(fontSize: screenWidth / 26, fontFamily: "NexaBold")));
   }
 
-  Widget customField(String hint) {
+  Widget customField(
+      String hint, TextEditingController controller, bool obscure) {
     return Container(
         width: screenWidth,
         decoration: const BoxDecoration(
@@ -111,15 +141,22 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
             Expanded(
-              child: TextFormField(
-                enableSuggestions: false,
-                autocorrect: false,
-                decoration: InputDecoration(
+              child: Padding(
+                padding: EdgeInsets.only(right: screenWidth / 4),
+                child: TextFormField(
+                  controller: controller,
+                  enableSuggestions: false,
+                  autocorrect: false,
+                  decoration: InputDecoration(
                     contentPadding: EdgeInsets.symmetric(
                       vertical: screenHeight / 35,
                     ),
                     border: InputBorder.none,
-                    hintText: hint),
+                    hintText: hint,
+                  ),
+                  maxLines: 1,
+                  obscureText: obscure,
+                ),
               ),
             )
           ],
