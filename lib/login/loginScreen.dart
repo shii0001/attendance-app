@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
@@ -82,25 +83,61 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   fieldTitle("Password"),
                   customField("Enter your password", passController, true),
-                  Container(
-                    height: 60,
-                    width: screenWidth,
-                    margin: EdgeInsets.only(top: screenHeight / 40),
-                    decoration: BoxDecoration(
-                        color: primary,
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(35))),
-                    child: Center(
-                        child: Text(
-                      "LOGIN",
-                      style: TextStyle(
-                        fontFamily: "NexaBold",
-                        fontSize: screenWidth / 26,
-                        color: Colors.white,
-                        letterSpacing: 2,
+                  Row(children: [
+                    GestureDetector(
+                      onTap: () async {
+                        String id = idController.text.trim();
+                        String password = passController.text.trim();
+                        QuerySnapshot snap = await FirebaseFirestore.instance
+                            .collection("User")
+                            .where('id', isEqualTo: id)
+                            .get();
+                        print(snap.docs[0]);
+                      },
+                      child: Container(
+                        height: 50,
+                        width: screenWidth / 2.5,
+                        margin: EdgeInsets.only(top: screenHeight / 40),
+                        decoration: BoxDecoration(
+                            color: primary,
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(35))),
+                        child: Center(
+                            child: Text(
+                          "LOGIN",
+                          style: TextStyle(
+                            fontFamily: "NexaBold",
+                            fontSize: screenWidth / 32,
+                            color: Colors.white,
+                            letterSpacing: 2,
+                          ),
+                        )),
                       ),
-                    )),
-                  )
+                    ),
+                    GestureDetector(
+                      onTap: () async {},
+                      child: Container(
+                        height: 50,
+                        width: screenWidth / 2.5,
+                        margin: EdgeInsets.only(
+                            top: screenHeight / 40, left: screenWidth / 32),
+                        decoration: BoxDecoration(
+                            color: primary,
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(35))),
+                        child: Center(
+                            child: Text(
+                          "REGISTER",
+                          style: TextStyle(
+                            fontFamily: "NexaBold",
+                            fontSize: screenWidth / 32,
+                            color: Colors.white,
+                            letterSpacing: 2,
+                          ),
+                        )),
+                      ),
+                    ),
+                  ]),
                 ],
               ),
             ),
