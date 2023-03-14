@@ -40,16 +40,31 @@ class _LoginScreenState extends State<LoginScreen> {
                       borderRadius: const BorderRadius.only(
                           bottomRight: Radius.circular(70)),
                     ),
-                    child: Center(
-                      child: Icon(
-                        Icons.person,
-                        color: Colors.white,
-                        size: screenWidth / 5,
-                      ),
-                    ),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(top: screenHeight / 10),
+                          ),
+                          Icon(
+                            Icons.edit_note_outlined,
+                            color: Colors.white,
+                            size: screenWidth / 6,
+                          ),
+                          Container(
+                            alignment: Alignment.center,
+                            child: Text(
+                              "T0D0",
+                              style: TextStyle(
+                                fontSize: screenWidth / 18,
+                                fontFamily: "NexaBold",
+                              ),
+                            ),
+                          ),
+                        ]),
                   ),
             Container(
-              margin: EdgeInsets.only(top: screenHeight / 15),
+              margin: EdgeInsets.only(top: screenHeight / 18),
               child: Text(
                 "Login",
                 style: TextStyle(
@@ -86,13 +101,42 @@ class _LoginScreenState extends State<LoginScreen> {
                   Row(children: [
                     GestureDetector(
                       onTap: () async {
+                        FocusScope.of(context).unfocus();
                         String id = idController.text.trim();
                         String password = passController.text.trim();
                         QuerySnapshot snap = await FirebaseFirestore.instance
                             .collection("User")
                             .where('id', isEqualTo: id)
                             .get();
-                        print(snap.docs[0]);
+                        print(snap.docs[0]['id']);
+
+                        if (id.isEmpty) {
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
+                            content: Text("User ID is still empty!"),
+                          ));
+                        } else if (password.isEmpty) {
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
+                            content: Text("Password is still empty!"),
+                          ));
+                        } else {
+                          QuerySnapshot snap = await FirebaseFirestore.instance
+                              .collection("User")
+                              .where("id", isEqualTo: id)
+                              .get();
+
+                          try {
+                            if (password == snap.docs[0]['password']) {
+                              print("continue");
+                            }
+                          } catch (e) {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
+                              content: Text("Incorrect password!"),
+                            ));
+                          }
+                        }
                       },
                       child: Container(
                         height: 50,
@@ -127,7 +171,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 const BorderRadius.all(Radius.circular(35))),
                         child: Center(
                             child: Text(
-                          "REGISTER",
+                          "REGISTER NOW",
                           style: TextStyle(
                             fontFamily: "NexaBold",
                             fontSize: screenWidth / 32,
@@ -169,7 +213,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ]),
         child: Row(
           children: [
-            Container(
+            SizedBox(
               width: screenWidth / 6,
               child: Icon(
                 Icons.person,

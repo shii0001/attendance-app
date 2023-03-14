@@ -1,9 +1,11 @@
 import 'package:attendanceapp/login/loginScreen.dart';
-import 'package:attendanceapp/login/registerScreen.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -20,7 +22,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: const KeyboardVisibilityProvider(
-        child: RegisterScreen(),
+        child: LoginScreen(),
       ),
     );
   }
